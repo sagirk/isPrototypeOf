@@ -34,13 +34,17 @@ function isPrototypeOf(prototypeObject, testObject) {
     throw new TypeError;
   }
 
-  /* Iterative case */
-  // Iteratively traverse through testObject's prototype chain until prototypeObject is found or null is reached.
-  while (testObject.__proto__ !== null) {
-    if (testObject.__proto__ === prototypeObject) {
-      return true;
-    }
-    testObject = testObject.__proto__;
+  /* Base cases */
+  // Stop if prototypeObject is found in testObject's prototype chain.
+  if (testObject.__proto__ === prototypeObject) {
+    return true;
   }
-  return false;
+  // Stop if null is reached in testObject's prototype chain.
+  if (testObject.__proto__ === null) {
+    return false
+  }
+
+  /* Recursive case */
+  // Recursively traverse through testObject's prototype chain until prototypeObject is found or null is reached.
+  return isPrototypeOf(prototypeObject, testObject.__proto__)
 }
