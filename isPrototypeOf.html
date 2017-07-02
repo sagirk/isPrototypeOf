@@ -1,0 +1,59 @@
+<script src="https://rawgit.com/sagirk/simpleTest/master/simpletest.js"></script>
+<script src="./isPrototypeOf.js"></script>
+<script>
+// Test scaffolding
+var human = {
+  talk: function() {
+    console.log('talk');
+  }
+};
+
+var canine = {
+  bark: function() {
+    console.log('bark');
+  }
+};
+
+var dog = Object.create(canine);
+dog.fetch = function() {
+  console.log('fetch');
+};
+
+var myDog = Object.create(dog);
+var empty = Object.create(null);
+
+// Test cases
+tests({
+  'It should return true if prototypeObject is in the prototype chain of testObject.': function () {
+    eq(isPrototypeOf(dog, myDog), true);
+  },
+  'It should return false if prototypeObject is not in the prototype chain of testObject.': function () {
+    eq(isPrototypeOf(human, myDog), false);
+  },
+
+  'It should work for any number of prototype links.': function () {
+    eq(isPrototypeOf(canine, myDog), true);
+  },
+
+  'It should return false if testObject does not have a prototype.': function () {
+    eq(isPrototypeOf(dog, empty), false);
+  },
+  'It should return true if testObject has a prototype and prototypeObject is Object.prototype.': function () {
+    eq(isPrototypeOf(Object.prototype, myDog), true);
+  },
+  'It should throw TypeError if prototypeObject is undefined.': function () {
+    try {
+      isPrototypeOf(undefined, myDog);
+    } catch (error) {
+      eq(error instanceof TypeError, true);
+    }
+  },
+  'It should throw TypeError if prototypeObject is null.': function () {
+    try {
+      isPrototypeOf(null, myDog);
+    } catch (error) {
+      eq(error instanceof TypeError, true);
+    }
+  }
+});
+</script>
