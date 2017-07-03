@@ -21,12 +21,12 @@
 function isPrototypeOf(prototypeObject, testObject) {
   /* Edge cases */
   // Abort if testObject does not have a prototype.
-  if (testObject.__proto__ === undefined) {
+  if (Object.getPrototypeOf(testObject) === undefined) {
     return false;
   }
   // Abort if testObject has a prototype and prototypeObject is Object.prototype.
-  // This one is to just save time doing lookups for an obvious prototype.
-  if (testObject.__proto__ !== undefined && prototypeObject === Object.prototype) {
+  // This one is to just save resources doing lookups on the prototype chain for an obvious prototype.
+  if (Object.getPrototypeOf(testObject) !== undefined && prototypeObject === Object.prototype) {
     return true;
   }
   // Throw error if prototypeObject is undefined or null.
@@ -36,11 +36,11 @@ function isPrototypeOf(prototypeObject, testObject) {
 
   /* Iterative case */
   // Iteratively traverse through testObject's prototype chain until prototypeObject is found or null is reached.
-  while (testObject.__proto__ !== null) {
-    if (testObject.__proto__ === prototypeObject) {
+  while (Object.getPrototypeOf(testObject) !== null) {
+    if (Object.getPrototypeOf(testObject) === prototypeObject) {
       return true;
     }
-    testObject = testObject.__proto__;
+    testObject = Object.getPrototypeOf(testObject);
   }
   return false;
 }
