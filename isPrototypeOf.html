@@ -1,6 +1,42 @@
 <script src="https://rawgit.com/sagirk/simpleTest/master/simpletest.js"></script>
-<script src="./isPrototypeOf.js"></script>
 <script>
+// Function signature:
+  // isPrototypeOf(prototypeObject, testObject)
+
+// Parameters:
+  // prototypeObject: The prototype object.
+  // testObject: The object whose prototype chain will be searched.
+
+// Return value:
+  // A Boolean indicating whether prototypeObject lies in the prototype chain of testObject.
+
+function isPrototypeOf(prototypeObject, testObject) {
+  /* Edge cases */
+  // Abort if testObject does not have a prototype.
+  if (Object.getPrototypeOf(testObject) === undefined) {
+    return false;
+  }
+  // Abort if testObject has a prototype and prototypeObject is Object.prototype.
+  // This one is to just save resources doing lookups on the prototype chain for an obvious prototype.
+  if (Object.getPrototypeOf(testObject) !== undefined && prototypeObject === Object.prototype) {
+    return true;
+  }
+  // Throw error if prototypeObject is undefined or null.
+  if (prototypeObject === undefined || prototypeObject === null) {
+    throw new TypeError;
+  }
+
+  /* Iterative case */
+  // Iteratively traverse through testObject's prototype chain until prototypeObject is found or null is reached.
+  while (Object.getPrototypeOf(testObject) !== null) {
+    if (Object.getPrototypeOf(testObject) === prototypeObject) {
+      return true;
+    }
+    testObject = Object.getPrototypeOf(testObject);
+  }
+  return false;
+}
+
 // Test scaffolding
 var human = {
   talk: function() {
@@ -41,14 +77,12 @@ tests({
   'It should return true if testObject has a prototype and prototypeObject is Object.prototype.': function () {
     eq(isPrototypeOf(Object.prototype, myDog), true);
   },
-  'It should throw TypeError if prototypeObject is undefined.': function () {
+  'It should throw TypeError if prototypeObject is undefined or null.': function () {
     try {
       isPrototypeOf(undefined, myDog);
     } catch (error) {
       eq(error instanceof TypeError, true);
     }
-  },
-  'It should throw TypeError if prototypeObject is null.': function () {
     try {
       isPrototypeOf(null, myDog);
     } catch (error) {
